@@ -18,14 +18,14 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
- payload map ( payload01 , indexOfPayload01 ) -> {
-	user_id: payload01.user_id default 0,
-	phone: payload01.phone default "",
-	restaurant_id: payload01.restaurant_id,
-	image_resto: payload01.image_resto default "",
-	nom_restaurant: payload01.nom_restaurant default "",
-	adresse: payload01.adresse default "",
-	siret: payload01.siret default ""
+ payload map ( item, index ) -> {
+	user_id: item.user_id default 0,
+	phone: item.phone default "",
+	restaurant_id: item.restaurant_id ++ (index),
+	image_resto: item.image_resto default "",
+	nom_restaurant: item.nom_restaurant default "",
+	adresse: item.adresse default "",
+	siret: item.siret default ""
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
