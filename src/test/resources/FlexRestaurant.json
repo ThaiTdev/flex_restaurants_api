@@ -1,0 +1,20 @@
+[
+  {
+    "user_id": 1,
+    "phone": "33542542542",
+    "restaurant_id": 1,
+    "image_resto": "http://localhost:5000/uploads/uploadImagesPro_2/uploadImageResto/1687167453895_banner.jpg",
+    "nom_restaurant": "le bon repas",
+    "adresse": "84 rue Marius Ombras22081984",
+    "siret": "12345678912344"
+  },
+  {
+    "user_id": 2,
+    "phone": "33542542542",
+    "restaurant_id": 1,
+    "image_resto": "http://localhost:5000/uploads/uploadImagesPro_2/uploadImageResto/1687167453895_banner.jpg",
+    "nom_restaurant": "le bon repas",
+    "adresse": "84 rue Marius Ombras22081984",
+    "siret": "12345678912344"
+  }
+]
