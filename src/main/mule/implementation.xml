@@ -18,6 +18,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
+
  payload map ( item, index ) -> {
 	user_id: item.user_id default 0,
 	phone: item.phone default "",
@@ -26,6 +27,7 @@ output application/json
 	nom_restaurant: item.nom_restaurant default "",
 	adresse: item.adresse default "",
 	siret: item.siret default ""
+
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
