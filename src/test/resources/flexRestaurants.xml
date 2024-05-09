@@ -1,0 +1,22 @@
+
+<data>
+    <resto>
+        <user_id></user_id>
+        <restaurant_id></restaurant_id>
+        <phone></phone>
+        <image_resto></image_resto>
+        <nom_restaurant></nom_restaurant>
+        <adresse></adresse>
+        <siret></siret>
+    </resto>
+    <resto>
+        <user_id></user_id>
+        <restaurant_id></restaurant_id>
+        <phone></phone>
+        <image_resto></image_resto>
+        <nom_restaurant></nom_restaurant>
+        <adresse></adresse>
+        <siret></siret>
+    </resto>
+</data>
+

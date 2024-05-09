@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_ea6fd8a4_e4e1_4796_9d7a_ac73fab31769_Output_Payload = Array<{|  categorie: String,   user_id: Number {"typeId": "int"},   activationCode: String,   isActive: Boolean,   logger: Boolean,   email: String|} | {|  user_id: Number {"typeId": "int"},   phone: String,   restaurant_id: Number {"typeId": "int"},   image_resto: String,   nom_restaurant: String,   adresse: String,   siret: String|} | String {"typeAlias": "auto_1b00f73d-519e-4061-b9a5-bdf521d6af6d_Output-Payload"}>
+

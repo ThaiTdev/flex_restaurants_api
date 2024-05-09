@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="privateFlow" doc:id="8aff1174-6089-4fbd-9ded-89a5f4d15dfe" >
+		<db:select doc:name="Select" doc:id="dfb0855b-38e1-4e59-9690-2145edcb9425" config-ref="Database_Config">
+			<db:sql><![CDATA[SELECT * FROM restaurants]]></db:sql>
+		</db:select>
+	</flow>
+	<flow name="getAllRestaurants" doc:id="e8d20a48-180a-49a9-8b53-f0c324d1aeb0" >
+		<flow-ref doc:name="privateFlow" doc:id="9dbff452-a15b-4c86-afb3-e24fdc9f7b27" name="privateFlow" />
+		<ee:transform doc:name="Transform Message" doc:id="f688ea02-2853-4367-9179-b108d847d973" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+ payload map ( payload01 , indexOfPayload01 ) -> {
+	user_id: payload01.user_id default 0,
+	phone: payload01.phone default "",
+	restaurant_id: payload01.restaurant_id,
+	image_resto: payload01.image_resto default "",
+	nom_restaurant: payload01.nom_restaurant default "",
+	adresse: payload01.adresse default "",
+	siret: payload01.siret default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e2abe71d-46d5-417f-8ac2-386c989c3a31" message="#['voici les données': payload]"/>
+	</flow>
+	<flow name="getRestaurantById" doc:id="5f25b56d-0261-4f83-aa16-5a9360a47a59" >
+		<flow-ref doc:name="Sub_Flow" doc:id="b4804794-f0f5-4724-94a2-f1d23f6e55ce" name="Sub_Flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="d9aacbab-22f7-494b-8f22-de65d80747a3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload  map ( payload01 , indexOfPayload01 ) -> {
+	user_id: payload01.user_id default 0,
+	phone: payload01.phone default "",
+	restaurant_id: payload01.restaurant_id,
+	image_resto: payload01.image_resto default "",
+	nom_restaurant: payload01.nom_restaurant default "",
+	adresse: payload01.adresse default "",
+	siret: payload01.siret default ""
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="08f08966-cc0d-4129-bccb-9cf85cd7f093" message="#['voici les données': payload]" />
+	</flow>
+	<flow name="getAllUserFlex" doc:id="5c7c6e92-e91c-4aba-ab46-4eb0a4b33f38">
+		<http:listener doc:name="GET /allUsersFlex" doc:id="4db7e5c9-34d8-45ae-b4bc-34f0ea87414e" config-ref="HTTP_Listener_config" path="/allUsersFlex" allowedMethods="GET" />
+		<db:select doc:name="Select" doc:id="5e0ac01a-4332-4b72-986d-50e92824efda" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM users]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="7713858d-1709-441a-8f21-63f962ea528e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	categorie: payload01.categorie,
+	user_id: payload01.user_id,
+	activationCode: payload01.activationCode default "",
+	isActive: payload01.isActive default true,
+	logger: payload01.logger default true,
+	email: payload01.email
+} 
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="684d105e-3d7f-48fd-99ea-1a36a9d0f941" message="#['voici les données': payload]" />
+	</flow>
+	<sub-flow name="Sub_Flow" doc:id="176e4c11-f88d-4677-a83b-3ed596ce235e" >
+		<db:select doc:name="Select" doc:id="0e327809-ffdd-478d-9bc7-5ef33dbb2496" config-ref="Database_Config">
+			<db:sql><![CDATA[SELECT * FROM restaurants WHERE restaurant_id = :ID]]></db:sql>
+			<db:input-parameters><![CDATA[#[{"ID": attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+	</sub-flow>
+	<flow name="getbonjourParam" doc:id="1b00f73d-519e-4061-b9a5-bdf521d6af6d">
+		<http:listener doc:name="GET /bonjourParam" doc:id="de3a5892-e0a4-4695-8a7b-6ac9a0bab85a" config-ref="HTTP_Listener_config" path="/bonjourParam">
+			<ee:repeatable-file-store-stream bufferUnit="MB" />
+			<http:response>
+				<http:headers><![CDATA[#[output application/java
+---
+{
+	"param" : vars.fname
+}]]]></http:headers>
+			</http:response>
+		</http:listener>
+		<set-variable value="#[message.attributes.queryParams.name]" doc:name="Set Variable" doc:id="4349cf74-dfe7-4e0a-8a87-99b74fa23a11" variableName="fname" />
+		<set-payload value="#[&quot;bonjour&quot; ++ &quot; &quot; ++ (upper(vars.fname)default upper('tonton'))]" doc:name="Set Payload" doc:id="d16b2339-4662-4322-aa65-870bc749ae00" />
+		<logger level="INFO" doc:name="Logger" doc:id="e10b4776-a953-470b-a10f-e6f2caf65d26" />
+	</flow>
+	<flow name="getAllData" doc:id="ea6fd8a4-e4e1-4796-9d7a-ac73fab31769">
+		<http:listener doc:name="GET /allData" doc:id="b8d95b2f-c871-4499-93aa-f983ec63a875" config-ref="HTTP_Listener_config" path="/allData"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="97dcedc1-61f1-4126-ae0a-27525dbe19a0" >
+			<route >
+				<flow-ref doc:name="getAllRestaurants" doc:id="c8d07edb-aba2-4fa0-afba-cba3d75e8b92" name="getAllRestaurants"/>
+			</route>
+			<route >
+				<flow-ref doc:name="getAllUserFlex" doc:id="98c8baa4-c875-4235-b165-57f21cc0b12e" name="getAllUserFlex"/>
+			</route>
+			<route >
+				<flow-ref doc:name="getbonjourParam" doc:id="9cff74b6-3c95-4513-9b01-91e25c50bd7c" name="getbonjourParam"/>
+			</route>
+		
+</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="1f3a5e9f-ba49-43a5-b614-f56f8413c547" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+flatten(payload..payload)    ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="62285f00-7e13-4c88-8dcb-0e66f49149a8" />
+	
+</flow>
+	<flow name="flex_retaurants_apiFlow" doc:id="45c1109b-bfd0-4aa0-adf3-5420936b66d7" >
+		<http:listener doc:name="Listener" doc:id="06e95525-3d87-400f-be9c-6efd3b1f4675" config-ref="HTTP_Listener_config" path="/choiceData"/>
+		<set-variable value="#[attributes.queryParams.categorie]" doc:name="Set Variable" doc:id="d2c5796c-221c-4d80-92c3-552a92e0911e" variableName="categorie"/>
+		<choice doc:name="Choice" doc:id="d4c52d3c-fa35-42d4-b56a-c1736a26779c" >
+			<when expression='#[vars.categorie == "PRO"]'>
+				<flow-ref doc:name="getAllRestaurants" doc:id="83a19293-ce50-4b3e-a6c7-6f12bec1bacf" name="getAllRestaurants"/>
+			</when>
+			<when expression='#[vars.categorie == "PER"]'>
+				<flow-ref doc:name="getAllUserFlex" doc:id="2b710c95-fe05-4032-a088-5669f8a6957d" name="getAllUserFlex"/>
+			</when>
+			<when expression='#[vars.categorie == "TEST"]'>
+				<flow-ref doc:name="Flow Reference" doc:id="6406dcda-21bb-4649-94af-99753d205580" name="getbonjourParam"/>
+			</when>
+			<otherwise >
+				<flow-ref doc:name="Flow Reference" doc:id="0d83d72a-3a60-48c1-bf00-c2bad1bd92ef" name="getAllData"/>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="Transform Message" doc:id="6c2a4a4d-c822-42eb-89ad-a5119c9faab2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="payload" doc:id="ed7bc995-2657-44ac-a596-53670829aef3" message="#[payload]"/>
+	</flow>
+</mule>
