@@ -23,7 +23,7 @@ output application/json
 	phone: item.phone default "",
 	restaurant_id: item.restaurant_id ++ (index),
 	image_resto: item.image_resto default "",
-	nom_restaurant: item.nom_restaurant default "",
+	nom_restaurant: "mon plus beau restaurant" default "",
 	adresse: item.adresse default "",
 	siret: item.siret default ""
 }]]></ee:set-payload>
